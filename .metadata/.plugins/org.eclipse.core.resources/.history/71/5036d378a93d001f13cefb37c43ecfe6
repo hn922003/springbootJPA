@@ -1,0 +1,161 @@
+package com.tjoeun.springBootJPA.domain;
+
+import java.time.LocalDateTime;
+
+import jakarta.annotation.PreDestroy;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.PostLoad;
+import jakarta.persistence.PostPersist;
+import jakarta.persistence.PostRemove;
+import jakarta.persistence.PostUpdate;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreRemove;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
+import jakarta.persistence.UniqueConstraint;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
+
+@NoArgsConstructor       // 기본 생성자를 만든다.
+@AllArgsConstructor      // 모든 필드를 초기화 하는 생성자를 만든다.
+@RequiredArgsConstructor // 특정(@NonNull 어노테이션을 붙여준) 필드를 초기화 하는 생성자를 만든다.
+@Getter                  // 모든 필드의 getter 메소드를 만든다.
+@Setter                  // 모든 필드의 setter 메소드를 만든다.
+@ToString                // toString() 메소드를 Override 한다.
+@EqualsAndHashCode       // equals() 메소드와 hashCode() 메소드를 Override 한다.
+@Data                    // @Getter, @Setter, @ToString, @EqualsAndHashCode를 일괄 실행한다.
+@Builder                 // 생성자를 대신해서 객체를 생성한다.
+@Slf4j                   // 롬복이 지원하는 log를 출력할 때 사용한다.
+
+@Entity
+@SequenceGenerator(
+	name = "seq_generator", // 시퀀스 제네레이터 이름
+	sequenceName = "member_id_seq", // 시퀀스 이름
+	initialValue = 1, // 시퀀스 초기값
+	allocationSize = 1 // 시퀀스 증가값
+)
+@EntityListeners(value = { MyEntityListener.class })
+// @Table: 테이블 이름 변경, 인덱스 생성, 유일성 제약 사항을 지정할 수 있다.
+@Table(name = "member2", indexes = {@Index(columnList = "name")}, uniqueConstraints = {@UniqueConstraint(columnNames = "email")})
+public class Member implements Auditable {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_generator")
+	private Long id;
+	
+	@NonNull             // null 값을 허용하지 않는다.
+	private String name;
+	@NonNull
+	private String email;
+	
+//	@Column 테이블 필드의 별도의 설정을 위해 붙인다. 생략가능.
+//	필드 이름 변경, null값 허용 여부, 유일성 제약 사항 설정, 필드 크기 지정, sql 실행시 필드 포함 여부 지정 등의 작업.
+	@NonNull
+	@Column(name = "nick", nullable = false, unique = true, length = 100)
+	private String nickname;
+	
+	@Column(updatable = false) // 업데이트 불가
+	private LocalDateTime createAt;
+	@Column(insertable = false) // 인서트 불가
+	private LocalDateTime updateAt;
+	
+// @Transient:프로그래밍에만 필요하고 실제 DB에는 안들어감.	
+	@Transient 
+	private String testData;
+	
+//	@Enumerated: enum 객체를 사용시 인덱스 사용방식을 지정한다.
+	@Enumerated(value = EnumType.STRING)
+	private Gender gender;
+	
+//	JPA 제공 entity 이벤트 7가지
+	
+//	@PrePersist : insert 명령이 실행되기 전에 실행된다. 입력전 공통으로 실행할 사항을 넣는다.
+//	@PostPersist : insert 명령 실행 후에 실행된다.
+//	@PostLoad : select 명령 실행 후에 실행된다.
+//	@PreUpdate : update 명령이 실행되기 전에 실행된다.
+//	@PostUpdate : update 명령 실행 후에 실행된다.
+//	@PreRemove : delete 명령이 실행되기 전에 실행된다.
+//	@PostRemove : delete 명령 실행 후에 실행된다.
+	/*
+	@PrePersist
+	public void prePersist() {
+		System.out.println("============Member 클래스의 prePersist 메소드 실행===========");
+		createAt = LocalDateTime.now();
+	}
+	@PostPersist
+	public void postPersist() {
+		System.out.println("============Member 클래스의 postPersist 메소드 실행===========");
+	}
+	
+	@PostLoad
+	public void postLoad() {
+		System.out.println("============Select 후 postLoad 메소드 실행===========");
+	}
+	
+	@PreUpdate
+	public void preUpdate() {
+		System.out.println("============Update 전 prePersist 메소드 실행===========");
+		updateAt = LocalDateTime.now();
+	}
+	
+	@PostUpdate
+	public void postUpdate() {
+		System.out.println("============Update 후 postPersist 메소드 실행===========");
+	}
+	
+	@PreRemove
+	public void preRemove() {
+		System.out.println("============delete 전 prePersist 메소드 실행===========");
+	}
+	
+	@PostRemove
+	public void postRemove() {
+		System.out.println("============delete 후 postPersist 메소드 실행===========");
+	}
+	*/
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+

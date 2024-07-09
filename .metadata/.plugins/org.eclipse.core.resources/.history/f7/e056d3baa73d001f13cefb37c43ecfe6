@@ -1,0 +1,5 @@
+package com.tjoeun.springBootJPA.domain;
+
+public class MemberHistoryListener {
+
+}

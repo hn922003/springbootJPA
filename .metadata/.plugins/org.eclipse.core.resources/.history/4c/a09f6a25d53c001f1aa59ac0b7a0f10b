@@ -1,0 +1,43 @@
+package com.tjoeun.springBootJPA.domain;
+
+import java.time.LocalDateTime;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@SpringBootTest
+class MemberTest {
+
+	@Test
+	void test() {
+		Member member = new Member();
+		member.setName("홍길동");
+		member.setEmail("a@a.com");
+		member.setCreateAt(LocalDateTime.now());
+		member.setUpdateAt(LocalDateTime.now());
+		System.out.println("member: " + member);
+		log.info("member: " + member);
+		
+		Member member2 = new Member("임꺽정", "b@b.com", "산도적");
+		member2.setCreateAt(LocalDateTime.now());
+		member2.setUpdateAt(LocalDateTime.now());
+		System.out.println("member2: " + member2);
+		
+		Member member3 = new Member(1L, "장길산", "c@c.com", "도적넘", LocalDateTime.now(), LocalDateTime.now());
+		System.out.println("member3: " + member3);
+		
+//		생성자를 사용해서 객체를 만들때 인수의 순서가 중요하다.
+//		인수의 순서와 상관없이 객체를 만들어 사용하고 싶을 때 @Builder 어노테이션을 붙여준다.
+		Member member4 = Member.builder()
+			.email("d@d.com")
+			.name("일지매")
+			.updateAt(LocalDateTime.now())
+			.createAt(LocalDateTime.now())
+			.build();
+		System.out.println("member4: " + member4);
+	}
+
+}

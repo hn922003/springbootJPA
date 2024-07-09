@@ -1,0 +1,144 @@
+package com.tjoeun.springBootJPA.repository;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.tjoeun.springBootJPA.domain.Member;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import org.springframework.data.util.Streamable;
+
+
+
+//	Repository는 @Entity 어노테이션을 붙여서 JPA가 자동으로 만든 테이블에서 실행할 JPA 메소드를 정의한다.
+//	Repository로 사용할 모든 인터페이스는 JpaRepository 인터페이스를 상속받아서 만든다.
+//	JpaRepository<@Entity 어노테이션을 붙여서 만든 클래스 이름, 기본키로 사용할 필드의 자료형>
+//	JpaRepository 인터페이스가 제공하는 메소드를 살펴보려면 인터페이스 이름을 ctrl 키를 누른 상태로
+//	클릭하면 JpaRepository 인터페이스가 새 창으로 열리고 메소드 목록이 표시된다.
+public interface MemberRepository extends JpaRepository<Member, Long> {
+
+//	JpaRepository 인터페이스에서 제공하지 않는 JPA 메소드를 정의한다.
+	
+//	기본 쿼리 메소드 ================================================================================
+	
+//	findById() 메소드와 유사하게 다른 필드를 검색하는 메소드를 만들어 사용하려면 Id 대신 다른 필드의
+//	이름이 맨 뒤에 사용되는 추상 메소드를 만들어 사용하면 된다.
+//	중복되는 이름이 없을 경우 리턴되는 Entity 객체가 1개이므로 Member를 리턴 타입으로 한다.
+//	public Member findByName(String name); // name 필드를 검색하는 메소드
+//	중복되는 이름이 있을 경우 리턴되는 Entity 객체가 여러개이므로 List<Member>를 리턴 타입으로 한다.
+	public List<Member> findByName(String name);
+	
+//	모든 접두어를 다 사용할 수 있는 것은 아니지만 접두어만 다르게 사용해서 같은 기능이 실행되는 
+//	메소드를 만들어서 사용할 수 있다.
+//	메소드 접두어는 find, get, query, read, search, stream를 사용할 수 있는데 일반적으로 find를
+//	붙여서 사용한다.
+	public List<Member> findByEmail(String email);
+	public List<Member> getByEmail(String email);
+	public List<Member> queryByEmail(String email);
+	public List<Member> readByEmail(String email);
+	public List<Member> searchByEmail(String email);
+	public List<Member> streamByEmail(String email);
+	
+//	First나 Top이 사용되는 메소드를 만들어 사용하면 limit가 지정되는 쿼리가 만들어진다.
+//	First나 Top 뒤에 limit에 사용될 숫자를 지정한다. 숫자를 생략하면 1이 기본값으로 사용된다.
+	public List<Member> findFirst2ByName(String name);
+	public List<Member> findTop2ByName(String name);
+	
+//	First나 Top 이외에는 지원되지 않는데 만약에 지원되지 않는 Last를 사용한다면 Last는 무시되고
+//	findByName(String name)와 같은 기능이 실행된다.
+	public List<Member> findLast2ByName(String name);
+	
+//	쿼리 메소드 활용 ================================================================================
+
+//	초과(After, GreaterThan), 미만(Before, LessThan) 조건
+	public List<Member> findByCreateAtAfter(LocalDateTime date); // 날짜 초과
+	public List<Member> findByCreateAtBefore(LocalDateTime date); // 날짜 미만
+	public List<Member> findByIdGreaterThan(Long id);
+	public List<Member> findByIdLessThan(Long id);
+	
+//	이상(GreaterThanEqual), 이하(LessThanEqual) 조건
+	public List<Member> findByIdGreaterThanEqual(Long id);
+	public List<Member> findByIdLessThanEqual(Long id);
+	
+//	And, Or 조건
+	public List<Member> findByNameAndEmail(String name, String email);
+	public List<Member> findByEmailAndName(String email, String name);
+	public List<Member> findByNameOrEmail(String name, String email);
+	public List<Member> findByEmailOrName(String email, String name);
+	
+//	Between, ~ 이상이고 ~ 이하인
+	public List<Member> findByIdGreaterThanEqualAndIdLessThanEqual(Long id1, Long id2);
+	public List<Member> findByIdBetween(Long id1, Long id2);
+
+//	IsNull, IsNotNull
+	public List<Member> findByUpdateAtIsNull();
+	public List<Member> findByUpdateAtIsNotNull();
+	
+//	In, NotIn
+	public List<Member> findByNameIn(List<String> names);
+	public List<Member> findByNameNotIn(List<String> names);
+	
+//	Like
+//	Like는 와일드카드 문자 "%"와 연결하는 과정에서 가독성을 해칠 수 있다.
+	public List<Member> findByNameLike(String name);
+	
+//	StartingWith, EndingWith, Contains는 와일드카드 문자를 사용하지 않는다.
+	public List<Member> findByNameStartingWith(String name); // 시작하는
+	public List<Member> findByNameEndingWith(String name); // 끝나는
+	public List<Member> findByNameContains(String name); // 포함하는
+	
+//	정렬 =============================================================================
+
+	//	전체 데이터를 정렬한다.
+	public List<Member> findAllByOrderByEmailAsc(); // 이메일 오름차순 정렬
+	public List<Member> findAllByOrderByNameDesc(); // 이름 내림차순 정렬
+	
+//	특정 조건을 만족하는 데이터를 정렬한다.
+	public List<Member> findByNameOrderByEmailAsc(String name); // 이름 홍길동인 데이터 이메일 오름차순 정렬
+	public List<Member> findByNameOrderByIdDesc(String name); // 이름 홍길동인 데이터 아이디 내림차순 정렬
+	
+//	전체 데이터에서 Top 또는 First를 사용해서 limit를 지정해서 상위 데이터를 얻어온다.
+	public List<Member> findTop2AllByOrderByEmailAsc(); // 이메일 오름차순 정렬
+	public List<Member> findFirst2AllByOrderByNameDesc(); // 이름 내림차순 정렬
+	
+//	Top 또는 First를 사용해서 limit를 지정해서 상위 데이터를 얻어온다.
+	public List<Member> findTop1ByNameOrderByEmailAsc(String name); // 상위 1건
+	public List<Member> findFirst1ByNameOrderByIdDesc(String name); // 상위 1건
+	
+//	Top 또는 First를 뒤에 숫자 생략시 1개만 얻어온다.	
+	public List<Member> findTopByNameOrderByEmailAsc(String name); // 상위 1건
+	public List<Member> findFirstByNameOrderByIdDesc(String name); // 상위 1건
+	
+//	1차 정렬 기준 키 값이 같으면 2차 정렬 기준 키를 지정할 수 있다.
+	// 이메일이 같으면 아이디 내림차순
+	public List<Member> findAllByOrderByEmailAscIdDesc(); 
+	// 이름이 같으면 이메일 오름차순
+	public List<Member> findAllByOrderByNameDescEmailAsc();
+	// 이름 "홍길동" 인데 이메일 같으면 아이디 내림차순
+	public List<Member> findByNameOrderByEmailAscIdDesc(String name);
+	
+//	Sort 객체(domain.Sort)를 사용해도 같은 효과를 낼 수 있다.
+	public List<Member> findAll(Sort sort); 
+	public List<Member> findByName(String name, Sort sort); 
+	
+//	페이징=============================================================================
+	public Page<Member> findAll(Pageable pageable); 
+	public Page<Member> findByName(String name, Pageable pageable); 
+	
+	
+	
+	
+}
+
+
+
+
+
+
+
+
+
+

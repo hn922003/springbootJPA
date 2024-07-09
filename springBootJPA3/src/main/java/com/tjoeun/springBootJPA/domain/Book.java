@@ -1,0 +1,41 @@
+package com.tjoeun.springBootJPA.domain;
+
+import java.time.LocalDateTime;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+@NoArgsConstructor
+@Data
+@Entity
+@EntityListeners(value = { MyEntityListener.class })
+//Auditable 인터페이스의 추상 메소드 Override는 롬복이 자동으로 처리한다.
+public class Book implements Auditable {
+	
+	@Id
+	@GeneratedValue
+	private Long id;
+	
+	private String name;
+	private String author;
+	private LocalDateTime createAt;
+	private LocalDateTime updateAt;
+	
+	/*
+	 * 엔티티 이벤트보다 이벤트 리스너를 사용한다 => Auditable 이벤트 리스너 인터페이스 활용
+	 * 
+	@PrePersist // 엔티티 이벤트
+	public void prePersist() {
+		createAt = LocalDateTime.now();
+		updateAt = LocalDateTime.now();
+	}
+	
+	@PreUpdate // 엔티티 이벤트 
+	public void preUpdate() {
+		updateAt = LocalDateTime.now();
+	}
+	*/
+}

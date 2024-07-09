@@ -1,0 +1,23 @@
+package com.tjoeun.springBootJPA.repository;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+@SpringBootTest
+class BookRepositoryTest {
+	
+	@Autowired
+	private BookRepository bookRepository;
+	
+	@Test
+	void test() {
+		System.out.println("BookRepositoryTest 클래스의 test() 메소드");
+		System.out.println("prePersist 이벤트 메소드");
+		
+		
+	}
+	
+
+}

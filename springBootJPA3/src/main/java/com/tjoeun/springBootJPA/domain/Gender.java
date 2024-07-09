@@ -1,0 +1,9 @@
+package com.tjoeun.springBootJPA.domain;
+
+public enum Gender {
+	// 상수만 가지는 파일
+	// BABY,
+	MALE, // 0
+	FEMALE // 1
+	
+}
